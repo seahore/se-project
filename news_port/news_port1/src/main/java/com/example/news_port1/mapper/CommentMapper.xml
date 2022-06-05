@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.news_port1.mapper.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.example.news_port1.model.Comment">
+    <id column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="passage_id" jdbcType="INTEGER" property="passageId" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.news_port1.model.Comment">
+    <result column="review" jdbcType="LONGVARCHAR" property="review" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, user_id, passage_id, time
+  </sql>
+  <sql id="Blob_Column_List">
+    review
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from w_comment
+    where passage_id = #{passage_id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByAll" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from w_comment
+    where user_id = #{userId,jdbcType=VARCHAR}
+and passage_id = #{passageId,jdbcType=INTEGER}
+and review = #{review,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from w_comment
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.news_port1.model.Comment">
+    insert into w_comment (comment_id, user_id, passage_id,
+      time, review)
+    values (#{commentId,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{passageId,jdbcType=INTEGER},
+      #{time,jdbcType=TIMESTAMP}, #{review,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.news_port1.model.Comment">
+    insert into w_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="passageId != null">
+        passage_id,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="review != null">
+        review,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="passageId != null">
+        #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="review != null">
+        #{review,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.news_port1.model.Comment">
+    update w_comment
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="passageId != null">
+        passage_id = #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="time != null">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="review != null">
+        review = #{review,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.news_port1.model.Comment">
+    update w_comment
+    set user_id = #{userId,jdbcType=VARCHAR},
+      passage_id = #{passageId,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      review = #{review,jdbcType=LONGVARCHAR}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.news_port1.model.Comment">
+    update w_comment
+    set user_id = #{userId,jdbcType=VARCHAR},
+      passage_id = #{passageId,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+</mapper>

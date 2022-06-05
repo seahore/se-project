@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.news_port1.mapper.PassageMapper">
+  <resultMap id="BaseResultMap" type="com.example.news_port1.model.Passage">
+    <id column="passage_id" jdbcType="INTEGER" property="passageId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+    <result column="good_count" jdbcType="INTEGER" property="goodCount" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.news_port1.model.Passage">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    passage_id, title, keyword, user_id, time, good_count,content
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from w_passage
+    where passage_id = #{passageId,jdbcType=INTEGER}
+  </select>
+  <select id="selectPassagesByUserId" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    from w_passage
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll"  resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    from w_passage
+  </select>
+  <select id="hotSearch"  resultMap="ResultMapWithBLOBs">
+    SELECT   <include refid="Base_Column_List" /> FROM w_passage ORDER BY (SELECT COUNT(*) FROM w_comment WHERE passage_id = w_passage.passage_id)+good_count DESC;
+  </select>
+  <select id="searchPassage"  resultMap="ResultMapWithBLOBs">
+    SELECT * FROM w_passage WHERE title LIKE #{searchKey} OR keyword LIKE #{searchKey}
+  </select>
+  <select id="selectLatestPassage"  resultMap="ResultMapWithBLOBs">
+    SELECT * FROM w_passage ORDER BY time DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from w_passage
+    where passage_id = #{passageId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.news_port1.model.Passage">
+    insert into w_passage (passage_id, title, keyword,
+      user_id, time, good_count,
+      content)
+    values (#{passageId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{keyword,jdbcType=VARCHAR},
+      #{userId,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, #{goodCount,jdbcType=INTEGER},
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.news_port1.model.Passage">
+    insert into w_passage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="passageId != null">
+        passage_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="keyword != null">
+        keyword,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="goodCount != null">
+        good_count,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="passageId != null">
+        #{passageId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null">
+        #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodCount != null">
+        #{goodCount,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.news_port1.model.Passage">
+    update w_passage
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null">
+        keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodCount != null">
+        good_count = #{goodCount,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where passage_id = #{passageId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.news_port1.model.Passage">
+    update w_passage
+    set title = #{title,jdbcType=VARCHAR},
+      keyword = #{keyword,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      good_count = #{goodCount,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where passage_id = #{passageId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.news_port1.model.Passage">
+    update w_passage
+    set title = #{title,jdbcType=VARCHAR},
+      keyword = #{keyword,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      good_count = #{goodCount,jdbcType=INTEGER}
+    where passage_id = #{passageId,jdbcType=INTEGER}
+  </update>
+</mapper>

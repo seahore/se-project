@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.news_port1.mapper.GoodMapper">
+  <resultMap id="BaseResultMap" type="com.example.news_port1.model.Good">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <id column="passage_id" jdbcType="INTEGER" property="passageId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.example.news_port1.model.Good">
+    delete from w_good
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and passage_id = #{passageId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.news_port1.model.Good">
+    insert into w_good (user_id, passage_id)
+    values (#{userId,jdbcType=VARCHAR}, #{passageId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.news_port1.model.Good">
+    insert into w_good
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="passageId != null">
+        passage_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="passageId != null">
+        #{passageId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectAllGood" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      user_id,passage_id
+    from w_good
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+</mapper>
